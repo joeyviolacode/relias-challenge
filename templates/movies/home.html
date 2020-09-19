@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Hello!</h1>
+{% for item in key %}
+<img src="{{item.image}}">
+<p>{{item.title}}</p>
+<p>{{item.overview}}</p>
+<p>{{item.year}}</p>
+{% endfor %}
+{% endblock %}
