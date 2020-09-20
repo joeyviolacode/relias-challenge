@@ -23,6 +23,7 @@ urlpatterns = [
     path('accounts/', include("registration.backends.simple.urls")),
     path('', movie_views.Home.as_view(), name="home"),
     path('search', movie_views.Search.as_view(), name="search"),
+    path('movie/<int:id>', movie_views.MovieDetail.as_view(), name="movie-detail"),
 ]
 
 if settings.DEBUG:

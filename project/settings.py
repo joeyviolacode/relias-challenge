@@ -52,6 +52,7 @@ INSTALLED_APPS = [
 
     # Project-specific
     'users',
+    'movies',
 ]
 
 MIDDLEWARE = [
