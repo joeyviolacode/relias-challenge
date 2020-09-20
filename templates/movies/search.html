@@ -1,11 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% if not movies %}
+<h4>We're sorry.  There were no movies that matched that query.  Please try again.</h4>
+{% endif %}
 
+{% if movies %}
 {% for item in movies %}
 <img src="{{item.image}}">
 <p>{{item.title}}</p>
 <p>{{item.overview}}</p>
 <p>{{item.year}}</p>
 {% endfor %}
+{% endif %}
 {% endblock %}

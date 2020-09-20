@@ -15,6 +15,14 @@
       <div class="header-left">
         <div><a class="home-link" href="#"><h1>Movie Search</h1></a></div>
       </div>
+      <div class="header-search v-center">
+        <form action="{% url 'search' %}" class="" method="get">
+            <div>
+              <input name="query" type="text" placeholder="Search here...">
+              <button type="submit">Search now!</button>
+            </div>
+        </form>
+      </div>
       <div class="header-right v-center">
         <div>
           {% if user.is_authenticated %}

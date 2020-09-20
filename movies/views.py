@@ -33,4 +33,24 @@ class Home(View):
                             "year": item["release_date"], 
                             "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
                             })
-        return render(request, 'movies/home.html', {'key': list})
+        return render(request, 'movies/home.html', {'movies': list})
+
+
+class Search(View):
+    def get(self, request):
+        query = request.GET.get('query')
+        if query is not None:
+            query_string = urllib.parse.quote(query)
+            r = requests.get(f'{DB_URL}/search/movie?query={query_string}&api_key={MOVIE_API_KEY}')
+            list = []
+            for item in r.json()["results"]:
+                if item["poster_path"]:
+                    list.append({"title": item["original_title"], 
+                                "overview": item["overview"], 
+                                "year": item["release_date"], 
+                                "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
+                                })
+        else:
+            movies = None
+        return render(request, 'movies/search.html', {'movies': list, "query": query or ""})
+
