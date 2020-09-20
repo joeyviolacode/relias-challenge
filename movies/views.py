@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from project.settings import MOVIE_API_KEY
 import requests
+import urllib
 
 DB_URL = "https://api.themoviedb.org/3"
 IMAGE_URL = "https://image.tmdb.org/t/p/w300/"
@@ -22,13 +23,14 @@ temp = "rLOk4z9zL1tTukIYV56P94aZXKk.jpg"
 class Home(View):
 
     def get(self, request):
-        query = "A%20few%20good%20men"
+        query = urllib.parse.quote("Lord of the Rings")
         r = requests.get(f'{DB_URL}/search/movie?query={query}&api_key={MOVIE_API_KEY}')
         list = []
         for item in r.json()["results"]:
-            if item["vote_count"] > 0:
+            if item["poster_path"]:
                 list.append({"title": item["original_title"], 
                             "overview": item["overview"], 
                             "year": item["release_date"], 
-                            "image": f"{IMAGE_URL}{item['poster_path'][1:]}"})
+                            "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
+                            })
         return render(request, 'movies/home.html', {'key': list})
