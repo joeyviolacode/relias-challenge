@@ -23,14 +23,15 @@ temp = "rLOk4z9zL1tTukIYV56P94aZXKk.jpg"
 class Home(View):
 
     def get(self, request):
-        query = urllib.parse.quote("Lord of the Rings")
-        r = requests.get(f'{DB_URL}/search/movie?query={query}&api_key={MOVIE_API_KEY}')
+        #query = urllib.parse.quote("Lord of the Rings")
+        r = requests.get(f'{DB_URL}/discover/movie?sort_by=popularity.desc&api_key={MOVIE_API_KEY}')
         list = []
         for item in r.json()["results"]:
             if item["poster_path"]:
                 list.append({"title": item["original_title"], 
                             "overview": item["overview"], 
-                            "year": item["release_date"], 
+                            "year": item["release_date"][:4],
+                            "tmdb_id": item["id"], 
                             "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
                             })
         return render(request, 'movies/home.html', {'movies': list})
@@ -47,10 +48,14 @@ class Search(View):
                 if item["poster_path"]:
                     list.append({"title": item["original_title"], 
                                 "overview": item["overview"], 
-                                "year": item["release_date"], 
+                                "year": item["release_date"][:4],
+                                "tmdb_id": item["id"], 
                                 "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
                                 })
         else:
             movies = None
         return render(request, 'movies/search.html', {'movies': list, "query": query or ""})
 
+class MovieDetail(View):
+    def get(self, request, id):
+        pass

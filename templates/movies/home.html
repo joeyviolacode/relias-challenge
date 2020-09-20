@@ -1,11 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-{% for item in movies %}
-<img src="{{item.image}}">
-<p>{{item.title}}</p>
-<p>{{item.overview}}</p>
-<p>{{item.year}}</p>
-{% endfor %}
+<div class="content-div">
+    <h3>Welcome to Movie Search!  Here are today's most popular movies:</h3>
+    <div class="flex-space">
+    {% for item in movies %}
+    <!-- <div>
+        <img src="{{item.image}}">
+        <p>{{item.title}} -- {{item.tmdb_id}}</p>
+        <p>{{item.overview}}</p>
+        <p>{{item.year}}</p>
+    </div> -->
+    {% include "movies/movie-pane.html" %}
+    {% endfor %}
+    </div>
+</div>
 {% endblock %}

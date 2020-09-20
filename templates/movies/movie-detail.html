@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="content-div">
+    <div class="flex-space">
+            <img src="{{item.image}}">
+            <p>{{item.title}} -- {{item.tmdb_id}}</p>
+            <p>{{item.overview}}</p>
+            <p>{{item.year}}</p>
+    </div>
+</div>
+{% endblock %}
