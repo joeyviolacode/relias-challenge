@@ -1,17 +1,12 @@
 from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render
-#from .models import Album, Comment, Photo
-#from .forms import AlbumForm, CommentForm, PhotoForm
+from .models import Movie
 from users.models import User
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 from project.settings import MOVIE_API_KEY
 import requests
 import urllib
@@ -19,6 +14,7 @@ import urllib
 DB_URL = "https://api.themoviedb.org/3"
 IMAGE_URL = "https://image.tmdb.org/t/p/w300/"
 temp = "rLOk4z9zL1tTukIYV56P94aZXKk.jpg"
+
 
 def get_page_bounds(page, num_pages):
     previous_page, next_page = None, None
@@ -87,7 +83,8 @@ class MovieDetail(View):
         cast_info = []
         for member in cast[:5]:
             cast_info.append({"name": member["name"], "cast_id": member["id"]})
-        return render(request, 'movies/movie-detail.html', {"movie": movie_info, "cast": cast_info})
+        is_favorite = request.user.favorites.filter(tmdb_id=id).count() == 1
+        return render(request, 'movies/movie-detail.html', {"movie": movie_info, "cast": cast_info, "is_favorite": is_favorite})
 
 
 class StarMovies(View):
@@ -106,3 +103,30 @@ class StarMovies(View):
                             "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
                             })
         return render(request, 'movies/star-movies.html', {"name": name, "movies": list, "star_id": id, "next": next_page, "previous": previous_page})
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(csrf_exempt, name="dispatch")
+class ToggleFavoriteMovie(View):
+    def post(self, request, tmdb_id):
+        movie = Movie.objects.all().filter(tmdb_id=tmdb_id)
+        if movie.count() == 0:
+            movie_data = requests.get(f'{DB_URL}/movie/{tmdb_id}?api_key={MOVIE_API_KEY}')
+            movie = movie_data.json()
+            if movie["poster_path"]:
+                movie = Movie(title=movie["original_title"],
+                                    release_date=movie["release_date"],
+                                    description=movie["overview"],
+                                    tmdb_id=tmdb_id,
+                                    imageURL=f"{IMAGE_URL}{movie['poster_path'][1:]}"
+                                    )
+                movie.save()
+        else: 
+            movie = movie.first()
+        user = request.user
+        if movie in user.favorites.all():
+            user.favorites.remove(movie)
+            return JsonResponse({"favorite": False})
+        else:
+            user.favorites.add(movie)
+            return JsonResponse({"favorite": True})

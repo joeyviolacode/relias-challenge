@@ -10,7 +10,17 @@
                 <div class="flex-wrap">
                     <h2>{{movie.title}}</h2>
                     <p class="detail-year">({{movie.year}})</p>
-                    <p>star</p>
+                    {% if user.is_authenticated %}
+                    <div class="star justify-right">
+                        <a data-movieid="{{movie.tmdb_id}}" class="favorite-link toggler" href="#">
+                            {% if is_favorite %}
+                            &#x2605;
+                            {% else %}
+                            &#x2606;
+                            {% endif %}
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
                 <p>{{movie.overview}}</p>
                 <div class="starring-div">
@@ -25,4 +35,23 @@
         </div>
     </div>
 </div>
+
+<script>
+const toggler = document.querySelector(".toggler")
+toggler.addEventListener("click", (e) => {
+    e.preventDefault()
+    const movieID = toggler.dataset.movieid
+    fetch(`/movie/${movieID}/fave`, {
+        method: 'POST'
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.favorite) {
+            toggler.innerHTML = "&#x2605;"
+        } else {
+            toggler.innerHTML = "&#x2606;"
+        }
+    })
+})
+</script>
 {% endblock %}

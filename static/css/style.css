@@ -214,3 +214,13 @@ header {
 .star-spacer {
     margin: 10px 0px 10px 15px;
 }
+
+/* For favorites star */
+.star {
+    margin: 15px 0px 0px 5px;
+}
+
+.favorite-link {
+    text-decoration: none;
+    color: black;
+}
