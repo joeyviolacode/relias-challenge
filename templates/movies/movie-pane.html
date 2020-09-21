@@ -1,11 +1,16 @@
 <div class="movie-pane">
+    <a href="{% url 'movie-detail' id=item.tmdb_id %}">
     <img class="poster" src="{{item.image}}">
     <div class="center">
-        <span>{{item.title | truncatechars:28 }}</span>
+        <span class="title">{{item.title | truncatechars:28 }}</span>
         <!-- <p>{{item.overview}}</p> -->
     </div>
     <div class="center">
+        {% if item.year %}
         <span class="year">({{item.year}})</span>
+        {% else %}
+        <span class="year">  </span>
+        {% endif %}
     </div>
-
+    </a>
 </div>

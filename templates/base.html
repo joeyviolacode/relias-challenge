@@ -14,7 +14,7 @@
 <body>
     <header class="header-box">
       <div class="header-left">
-        <div><a class="home-link" href="#"><h1>Movie Search</h1></a></div>
+        <div><a class="home-link" href="{% url 'home' %}"><h1>Movie Search</h1></a></div>
       </div>
       <div class="header-search v-center">
         <form action="{% url 'search' %}" class="" method="get">

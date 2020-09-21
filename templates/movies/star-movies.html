@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="content-div">
-    <h3>Welcome to Movie Search!  Here are today's most popular movies:</h3>
+    <h3>Here are {{name}}'s most popular movies:</h3>
     <div class="flex-space">
     {% for item in movies %}
     {% include "movies/movie-pane.html" %}

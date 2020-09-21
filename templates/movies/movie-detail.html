@@ -2,12 +2,23 @@
 
 {% block content %}
 
-<div class="content-div">
-    <div class="flex-space">
-            <img src="{{item.image}}">
-            <p>{{item.title}} -- {{item.tmdb_id}}</p>
-            <p>{{item.overview}}</p>
-            <p>{{item.year}}</p>
+<div class="content-div flex-around">
+    <div class="flex-wrap movie-detail">
+        <img class="big-poster" src="{{movie.image}}">
+        <div class="movie-info">
+            <div class="flex-wrap">
+                <h2>{{movie.title}}</h2>
+                <p class="detail-year">({{movie.year}})</p>
+                <p>star</p>
+            </div>
+            <p>{{movie.overview}}</p>
+            <div class="starring-div">
+                <h4>Starring:</h4>
+                {% for member in cast%}
+                <a href="{% url 'star-movies' name=member.name id=member.cast_id %}"><p>{{member.name}}</p></a>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

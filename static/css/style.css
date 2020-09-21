@@ -61,7 +61,8 @@ img {
 }
 
 header {
-    background-color:#a79f94;
+    /* background-color:#a79f94; */
+    background-color:#2e229c;
     height: 10%;
     margin: 0px 0px;
     color: white;
@@ -118,6 +119,11 @@ header {
     justify-content: space-between;
 }
 
+.flex-around {
+    display: flex;
+    justify-content: space-around;
+}
+
 .flex-space {
     display: flex;
     justify-content: space-between;
@@ -141,17 +147,54 @@ header {
 
 /* Movie pane styling */
 .movie-pane {
+    border: 1px solid black;
     margin: 20px 15px;
     width: 233px;
     border-radius: 5px;
+    box-shadow: 5px 5px 5px #888888;
+    transition: transform .2s; /* Animation */
+}
+
+.movie-pane:hover {
+    transform: scale(1.15);
 }
 
 .poster {
     height: 350px;
+    max-width: 233px;
     border-radius: 4px 4px 0px 0px;
+    border-bottom: 1px solid black;
 }
 
 .year {
     color: grey;
     font-size: 12px;
+    padding: 2px 0px;
+}
+
+.title {
+    padding: 2px 0px;
+}
+
+/* Movie detail styling */
+.movie-detail {
+    padding-left: 12%
+}
+
+.movie-info {
+    width: 40%;
+    padding-left: 30px;
+}
+
+.detail-year {
+    padding: 8px 0px 0px 15px;
+    color: grey;
+}
+
+.starring-div {
+    padding-top: 15px;
+}
+
+.big-poster {
+    border: 1px solid black;
 }

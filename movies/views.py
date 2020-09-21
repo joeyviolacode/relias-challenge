@@ -42,7 +42,7 @@ class Search(View):
         query = request.GET.get('query')
         if query is not None:
             query_string = urllib.parse.quote(query)
-            r = requests.get(f'{DB_URL}/search/movie?query={query_string}&api_key={MOVIE_API_KEY}')
+            r = requests.get(f'{DB_URL}/search/movie?query={query_string}&api_key={MOVIE_API_KEY}&sort_by=popularity.desc')
             list = []
             for item in r.json()["results"]:
                 if item["poster_path"]:
@@ -58,4 +58,33 @@ class Search(View):
 
 class MovieDetail(View):
     def get(self, request, id):
-        pass
+        movie_data = requests.get(f'{DB_URL}/movie/{id}?api_key={MOVIE_API_KEY}')
+        movie = movie_data.json()
+        if movie["poster_path"]:
+            movie_info = {"title": movie["original_title"], 
+                                    "overview": movie["overview"], 
+                                    "year": movie["release_date"][:4],
+                                    "tmdb_id": movie["id"], 
+                                    "image": f"{IMAGE_URL}{movie['poster_path'][1:]}"
+                                    }
+        cast_data = requests.get(f"{DB_URL}/movie/{id}/credits?api_key={MOVIE_API_KEY}")
+        cast = cast_data.json()["cast"]
+        cast_info = []
+        for member in cast[:5]:
+            cast_info.append({"name": member["name"], "cast_id": member["id"]})
+        return render(request, 'movies/movie-detail.html', {"movie": movie_info, "cast": cast_info})
+
+
+class StarMovies(View):
+    def get(self, request, name, id):
+        star_movies_data = requests.get(f"{DB_URL}/discover/movie?with_cast={id}&sort_by=popularity.desc&api_key={MOVIE_API_KEY}")
+        list = []
+        for item in star_movies_data.json()["results"]:
+            if item["poster_path"]:
+                list.append({"title": item["original_title"], 
+                            "overview": item["overview"], 
+                            "year": item["release_date"][:4],
+                            "tmdb_id": item["id"], 
+                            "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
+                            })
+        return render(request, 'movies/star-movies.html', {"name": name, "movies": list})
