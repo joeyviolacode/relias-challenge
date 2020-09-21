@@ -7,6 +7,21 @@
     <div>
         <h4>We're sorry.  There were no movies that matched that query.  Please try again.</h4>
     </div>
+    {% else %}
+    <div class="flex-space">
+        <h3>Here are the movies that match "{{query}}:</h3>
+        <div class="flex pagination-buttons">
+            {% if previous %}
+            <a href="{% url 'search' page=previous query=query %}">Previous Page </a>
+            {% endif %}
+            {% if next and previous %}
+            <span class="spacer">/</span>
+            {% endif %}
+            {% if next %}
+            <a href="{% url 'search' page=next query=query %}"> Next Page</a>
+            {% endif %}
+        </div>
+    </div>
     {% endif %}
     <div class="flex-space">
         <div class="flex-wrap">

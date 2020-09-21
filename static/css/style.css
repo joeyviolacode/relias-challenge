@@ -144,6 +144,14 @@ header {
     margin: 3%;
 }
 
+.spacer {
+    padding: 0px 3px;
+}
+
+/* Specific to list views */
+.pagination-buttons {
+    padding-top: 22px;
+}
 
 /* Movie pane styling */
 .movie-pane {

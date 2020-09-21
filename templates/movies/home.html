@@ -2,7 +2,20 @@
 
 {% block content %}
 <div class="content-div">
-    <h3>Welcome to Movie Search!  Here are today's most popular movies:</h3>
+    <div class="flex-space">
+        <h3>Welcome to Movie Search!  Here are today's most popular movies:</h3>
+        <div class="flex pagination-buttons">
+            {% if previous %}
+            <a href="{% url 'home' page=previous %}">Previous Page </a>
+            {% endif %}
+            {% if next and previous %}
+            <span class="spacer">/</span>
+            {% endif %}
+            {% if next %}
+            <a href="{% url 'home' page=next %}"> Next Page</a>
+            {% endif %}
+        </div>
+    </div>
     <div class="flex-space">
     {% for item in movies %}
     {% include "movies/movie-pane.html" %}
@@ -11,6 +24,9 @@
 </div>
 {% if previous %}
 <a href="{% url 'home' page=previous %}">Previous Page</a>
+{% if next %}
+<span>/</span>
+{% endif %}
 {% endif %}
 {% if next %}
 <a href="{% url 'home' page=next %}">Next Page</a>

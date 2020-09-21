@@ -31,7 +31,7 @@ SECRET_KEY = env('SECRET_KEY')
 MOVIE_API_KEY = env('MOVIE_API_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 

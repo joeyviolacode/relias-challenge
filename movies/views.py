@@ -20,20 +20,22 @@ DB_URL = "https://api.themoviedb.org/3"
 IMAGE_URL = "https://image.tmdb.org/t/p/w300/"
 temp = "rLOk4z9zL1tTukIYV56P94aZXKk.jpg"
 
-class Home(View):
+def get_page_bounds(page, num_pages):
+    previous_page, next_page = None, None
+    if page + 1 <= num_pages:
+        next_page = page + 1    
+    if page - 1 >= 1:
+        previous_page = page - 1
+    return previous_page, next_page
 
+
+class Home(View):
     def get(self, request, page=1):
         r = requests.get(f'{DB_URL}/discover/movie?sort_by=popularity.desc&api_key={MOVIE_API_KEY}&page={page}')
-        list = []
         results = r.json()
-
         num_pages = results["total_pages"]
-        previous_page, next_page = None, None
-        if page + 1 <= num_pages:
-            next_page = page + 1    
-        if page - 1 >= 1:
-            previous_page = page - 1
-
+        previous_page, next_page = get_page_bounds(page, num_pages)
+        list = []
         for item in results["results"]:
             if item["poster_path"]:
                 list.append({"title": item["original_title"], 
@@ -46,13 +48,17 @@ class Home(View):
 
 
 class Search(View):
-    def get(self, request):
-        query = request.GET.get('query')
+    def get(self, request, page=1, query=None):
+        if query is None:
+            query = request.GET.get('query')
         if query is not None:
             query_string = urllib.parse.quote(query)
-            r = requests.get(f'{DB_URL}/search/movie?query={query_string}&api_key={MOVIE_API_KEY}&sort_by=popularity.desc&is_adult=false')
+            r = requests.get(f'{DB_URL}/search/movie?query={query_string}&api_key={MOVIE_API_KEY}&sort_by=popularity.desc&page={page}')
+            results = r.json()
+            num_pages = results["total_pages"]
+            previous_page, next_page = get_page_bounds(page, num_pages)
             list = []
-            for item in r.json()["results"]:
+            for item in results["results"]:
                 if item["poster_path"]:
                     list.append({"title": item["original_title"], 
                                 "overview": item["overview"], 
@@ -61,8 +67,9 @@ class Search(View):
                                 "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
                                 })
         else:
-            movies = None
-        return render(request, 'movies/search.html', {'movies': list, "query": query or ""})
+            movies, next_page, previous_page = None, None, None
+        return render(request, 'movies/search.html', 
+                    {'movies': list, "query": query or "", "next": next_page, "previous": previous_page})
 
 class MovieDetail(View):
     def get(self, request, id):
@@ -84,10 +91,13 @@ class MovieDetail(View):
 
 
 class StarMovies(View):
-    def get(self, request, name, id):
-        star_movies_data = requests.get(f"{DB_URL}/discover/movie?with_cast={id}&sort_by=popularity.desc&api_key={MOVIE_API_KEY}")
+    def get(self, request, name, id, page=1):
+        r = requests.get(f"{DB_URL}/discover/movie?with_cast={id}&sort_by=popularity.desc&api_key={MOVIE_API_KEY}&page={page}")
+        results = r.json()
+        num_pages = results["total_pages"]
+        previous_page, next_page = get_page_bounds(page, num_pages)
         list = []
-        for item in star_movies_data.json()["results"]:
+        for item in results["results"]:
             if item["poster_path"]:
                 list.append({"title": item["original_title"], 
                             "overview": item["overview"], 
@@ -95,4 +105,4 @@ class StarMovies(View):
                             "tmdb_id": item["id"], 
                             "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
                             })
-        return render(request, 'movies/star-movies.html', {"name": name, "movies": list})
+        return render(request, 'movies/star-movies.html', {"name": name, "movies": list, "star_id": id, "next": next_page, "previous": previous_page})
