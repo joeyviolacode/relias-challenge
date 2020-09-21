@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include("registration.backends.simple.urls")),
     path('', movie_views.Home.as_view(), name="home"),
+    path('page/<int:page>', movie_views.Home.as_view(), name="home"),
     path('search', movie_views.Search.as_view(), name="search"),
     path('movie/<int:id>', movie_views.MovieDetail.as_view(), name="movie-detail"),
     path('star/<str:name>/<int:id>', movie_views.StarMovies.as_view(), name="star-movies"),

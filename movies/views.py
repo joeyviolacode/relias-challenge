@@ -22,11 +22,19 @@ temp = "rLOk4z9zL1tTukIYV56P94aZXKk.jpg"
 
 class Home(View):
 
-    def get(self, request):
-        #query = urllib.parse.quote("Lord of the Rings")
-        r = requests.get(f'{DB_URL}/discover/movie?sort_by=popularity.desc&api_key={MOVIE_API_KEY}')
+    def get(self, request, page=1):
+        r = requests.get(f'{DB_URL}/discover/movie?sort_by=popularity.desc&api_key={MOVIE_API_KEY}&page={page}')
         list = []
-        for item in r.json()["results"]:
+        results = r.json()
+
+        num_pages = results["total_pages"]
+        previous_page, next_page = None, None
+        if page + 1 <= num_pages:
+            next_page = page + 1    
+        if page - 1 >= 1:
+            previous_page = page - 1
+
+        for item in results["results"]:
             if item["poster_path"]:
                 list.append({"title": item["original_title"], 
                             "overview": item["overview"], 
@@ -34,7 +42,7 @@ class Home(View):
                             "tmdb_id": item["id"], 
                             "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
                             })
-        return render(request, 'movies/home.html', {'movies': list})
+        return render(request, 'movies/home.html', {'movies': list, "next": next_page, "previous": previous_page})
 
 
 class Search(View):
@@ -42,7 +50,7 @@ class Search(View):
         query = request.GET.get('query')
         if query is not None:
             query_string = urllib.parse.quote(query)
-            r = requests.get(f'{DB_URL}/search/movie?query={query_string}&api_key={MOVIE_API_KEY}&sort_by=popularity.desc')
+            r = requests.get(f'{DB_URL}/search/movie?query={query_string}&api_key={MOVIE_API_KEY}&sort_by=popularity.desc&is_adult=false')
             list = []
             for item in r.json()["results"]:
                 if item["poster_path"]:

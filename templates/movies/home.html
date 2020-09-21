@@ -9,4 +9,10 @@
     {% endfor %}
     </div>
 </div>
+{% if previous %}
+<a href="{% url 'home' page=previous %}">Previous Page</a>
+{% endif %}
+{% if next %}
+<a href="{% url 'home' page=next %}">Next Page</a>
+{% endif %}
 {% endblock %}
