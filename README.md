@@ -35,3 +35,4 @@ The DB used is SQLite just to ease setup on the receiving end.
 I've left Debug mode on in case any testers want to poke around in the Django Debig Toolbar panel on the right side.  Sometimes this starts in an open position on some browsers...not sure why.  Just an oddity.
 
 Thanks, and enjoy.
+Joey.
