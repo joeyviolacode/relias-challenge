@@ -18,6 +18,10 @@ POP_SORT = "sort_by=popularity.desc"
 
 
 def get_page_bounds(page, num_pages):
+    """
+    Helper function to get the next and previous pages without going out of range
+    for use in keeping track of "state" when cycling through different pages of 
+    results"""
     previous_page, next_page = None, None
     if page + 1 <= num_pages:
         next_page = page + 1    

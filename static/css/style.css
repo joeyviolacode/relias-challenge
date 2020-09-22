@@ -19,11 +19,11 @@ h4 {
     text-decoration: none;
     letter-spacing: .1em;
 }
-/* 
-a {
+ 
+.no-dec {
     text-decoration: none;
     color: black;
-} */
+}  
 
 img {
     display: block;
@@ -161,8 +161,8 @@ header {
     padding-top: 22px;
 }
 
-.favorites-link {
-    padding-right: 10px;
+.nav-link {
+    padding: 0px 10px;
 }
 
 /* Movie pane styling */
@@ -190,6 +190,7 @@ header {
     color: grey;
     font-size: 12px;
     padding: 2px 0px;
+    text-decoration: none;
 }
 
 .title {
@@ -217,6 +218,8 @@ header {
 
 .big-poster {
     border: 1px solid black;
+    height: 450px;
+    width: 300px;
 }
 
 .star-link {
@@ -260,4 +263,13 @@ header {
 /* For bio page */
 .bio-movie-link {
     padding: 25px 0px 0px 25px;
+}
+
+/* For registration forms */
+.reg-div {
+    border: 1px solid black;
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px #888888;
+    padding: 10px;
+    margin-top: 30px;
 }

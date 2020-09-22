@@ -1,5 +1,5 @@
 <div class="movie-pane">
-    <a href="{% url 'movie-detail' id=item.tmdb_id %}">
+    <a class="no-dec" href="{% url 'movie-detail' id=item.tmdb_id %}">
     <img class="poster" src="{{item.image}}">
     <div class="center">
         <span class="title">{{item.title | truncatechars:28 }}</span>

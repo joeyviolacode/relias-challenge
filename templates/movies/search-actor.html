@@ -12,7 +12,7 @@
     {% endif %}
     <div class="flex-wrap">
         {% for item in actors %}
-        <a href="{% url 'actor-detail' id=item.tmdb_id %}">
+        <a class="no-dec" href="{% url 'actor-detail' id=item.tmdb_id %}">
             <div class="actor-pane">
                 <img class="actor-pic-small" src="{{ item.image }}">
                 <div class="center">

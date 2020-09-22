@@ -32,6 +32,10 @@
     <div class="main-block">
         <div class="center">
             <div class="header-search flex">
+                <a class="nav-link" href="{% url 'home' %}">Home</a>
+                {% if user.is_authenticated %}
+                <a class="nav-link" href="{% url 'favorites' %}">Your Favorites</a>
+                {% endif %}
                 <form action="{% url 'search' %}" class="search-bar" method="get">
                     <div>
                     <input name="query" type="text" placeholder="Search movies...">

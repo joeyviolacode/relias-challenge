@@ -11,15 +11,11 @@
                     <h2>{{actor.name}}</h2>
                     <a class="bio-movie-link" href="{% url 'star-movies' name=actor.name id=actor.tmdb_id %}">See their movies!</a>
                 </div>
+                {% if actor.biography %}
                 <p>{{actor.biography}}</p>
-                <!-- <div class="starring-div">
-                    <h4>Starring:</h4>
-                    {% for member in cast%}
-                    <div class="star-spacer">
-                        <a class="star-link" href="{% url 'star-movies' name=member.name id=member.cast_id %}">{{member.name}}</a>
-                    </div>
-                    {% endfor %}
-                </div> -->
+                {% else %}
+                <p>We're sorry.  There is no bio for this actor.</p>
+                {% endif %}
             </div>
         </div>
     </div>
