@@ -83,7 +83,10 @@ class MovieDetail(View):
         cast_info = []
         for member in cast[:5]:
             cast_info.append({"name": member["name"], "cast_id": member["id"]})
-        is_favorite = request.user.favorites.filter(tmdb_id=id).count() == 1
+        if request.user.is_authenticated:
+            is_favorite = request.user.favorites.filter(tmdb_id=id).count() == 1
+        else:
+            is_favorite = False
         return render(request, 'movies/movie-detail.html', {"movie": movie_info, "cast": cast_info, "is_favorite": is_favorite})
 
 
