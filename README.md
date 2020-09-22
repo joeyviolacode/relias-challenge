@@ -17,6 +17,12 @@ After that, you'll need to run:
 
 You should have access to the app on 127.0.0.1:8000.
 
+If you'd like to have a look around the admin side of the site (pretty barebones at this point), you can create a superuser with the command
+
+    python manage.py createsuperuser
+
+and have a look around at 127.0.0.1:8000/admin
+
 
 ### About
 
