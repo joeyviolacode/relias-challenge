@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="content-div">
-    {% if user.is_authenticated%}
+    {% if user.is_authenticated %}
     {% if user.favorites.count > 0 %}
     <h3>Here are your favorite movies:</h3>
     {% else %}
@@ -13,6 +13,8 @@
     {% include "movies/movie-pane.html" %}
     {% endfor %}
     </div>
-    {% endif %}    
+    {% else %} 
+    <h3>You're not logged in.  Create an account or log in to star some favorite movies!</h3>
+    {% endif %}
 </div>
 {% endblock %}

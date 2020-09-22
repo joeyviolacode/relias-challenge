@@ -5,7 +5,9 @@
 <div class="content-div flex-around">
     <div class="center">
         <div class="flex actor-detail">
+            {% if actor.image %}
             <img class="big-poster" src="{{actor.image}}">
+            {% endif %}
             <div class="movie-info">
                 <div class="flex-wrap">
                     <h2>{{actor.name}}</h2>

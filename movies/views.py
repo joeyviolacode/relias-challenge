@@ -37,13 +37,16 @@ def get_movie_list(results):
     """
     list = []
     for item in results["results"]:
-        if item["poster_path"]:
-            list.append({"title": item["original_title"], 
-                        "overview": item["overview"], 
-                        "year": item["release_date"][:4],
-                        "tmdb_id": item["id"], 
-                        "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
-                        })
+        try: 
+            if item["poster_path"]:
+                list.append({"title": item["original_title"], 
+                            "overview": item["overview"], 
+                            "year": item["release_date"][:4],
+                            "tmdb_id": item["id"], 
+                            "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
+                            })
+        except KeyError:
+            pass
     return list
 
 
@@ -140,18 +143,12 @@ class ActorDetail(View):
     """
     def get(self, request, id):
         actor_data = requests.get(f'{DB_URL}/person/{id}?{API_KEY}')
-        actor = actor_data.json()
+        actor = actor_data.json()            
+        actor_info = {"name" : actor["name"],
+                        "biography" : actor["biography"],
+                        "tmdb_id": actor["id"],}
         if actor['profile_path']:
-            actor_info = {"name" : actor["name"],
-                            "biography" : actor["biography"],
-                            "image" : f"{IMAGE_URL}{actor['profile_path'][1:]}",
-                            "tmdb_id": actor["id"],
-                        }
-        else:
-            actor_info = {"name" : actor["name"],
-                            "biography" : actor["biography"],
-                            "tmdb_id": actor["id"],
-                        }
+            actor_info["image"] = f"{IMAGE_URL}{actor['profile_path'][1:]}"
         return render(request, 'movies/actor-bio.html', {"actor": actor_info})
 
 
@@ -170,17 +167,16 @@ class StarMovies(View):
         return render(request, 'movies/star-movies.html', {"name": name, "movies": list, "star_id": id, "next": next_page, "previous": previous_page})
 
 
-@method_decorator(login_required, name="dispatch")
 class ShowFavorites(View):
     """
     This pulls and sends out a registered user's favorite movies for display on their
     unique favorites page.
     """
     def get(self, request):
-        if user.is_authenticated:
+        if request.user.is_authenticated:
             movies = request.user.favorites.all()
         else:
-            movies = None
+            movies = []
         return render(request, 'movies/favorites.html', {"movies": movies})
 
 
