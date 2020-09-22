@@ -204,6 +204,7 @@ header {
 /* Movie detail styling */
 .movie-detail, .actor-detail {
     padding-top: 30px;
+    margin-bottom: 30px;
 }
 
 .movie-info {
