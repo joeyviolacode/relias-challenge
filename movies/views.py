@@ -30,25 +30,44 @@ def get_page_bounds(page, num_pages):
     return previous_page, next_page
 
 
+def get_movie_list(results):
+    """
+    This bit of code is called in several views to grab information from a list of movies,
+    so broken out here to keep things tidy.
+    """
+    list = []
+    for item in results["results"]:
+        if item["poster_path"]:
+            list.append({"title": item["original_title"], 
+                        "overview": item["overview"], 
+                        "year": item["release_date"][:4],
+                        "tmdb_id": item["id"], 
+                        "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
+                        })
+    return list
+
+
 class Home(View):
+    """
+    Shows the most popular movies for the day.  This view is overloaded so that it can
+    also be used to move through different pages of most popular movies on the APIwith 
+    navigation calls to next or previous page.
+    """
     def get(self, request, page=1):
         r = requests.get(f'{DB_URL}/discover/movie?{POP_SORT}&page={page}&{API_KEY}')
         results = r.json()
         num_pages = results["total_pages"]
         previous_page, next_page = get_page_bounds(page, num_pages)
-        list = []
-        for item in results["results"]:
-            if item["poster_path"]:
-                list.append({"title": item["original_title"], 
-                            "overview": item["overview"], 
-                            "year": item["release_date"][:4],
-                            "tmdb_id": item["id"], 
-                            "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
-                            })
+        list = get_movie_list(results)
         return render(request, 'movies/home.html', {'movies': list, "next": next_page, "previous": previous_page})
 
 
 class Search(View):
+    """
+    This view takes in a query from a form and executes a search on movie names on the API.
+    It is overloaded so that it can be used to move through different pages of matches to 
+    the search with calls to next or previous page.
+    """
     def get(self, request, page=1, query=None):
         if query is None:
             query = request.GET.get('query')
@@ -58,15 +77,7 @@ class Search(View):
             results = r.json()
             num_pages = results["total_pages"]
             previous_page, next_page = get_page_bounds(page, num_pages)
-            list = []
-            for item in results["results"]:
-                if item["poster_path"]:
-                    list.append({"title": item["original_title"], 
-                                "overview": item["overview"], 
-                                "year": item["release_date"][:4],
-                                "tmdb_id": item["id"], 
-                                "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
-                                })
+            list = get_movie_list(results)
         else:
             movies, next_page, previous_page = None, None, None
         return render(request, 'movies/search.html', 
@@ -74,6 +85,10 @@ class Search(View):
 
 
 class SearchActor(View):
+    """
+    This view takes in a query from a form and returns the 20 most popular actors that
+    meet that search query.
+    """
     def get(self, request):
         query = request.GET.get('query')
         if query is not None:
@@ -92,6 +107,9 @@ class SearchActor(View):
 
 
 class MovieDetail(View):
+    """
+    This view pulls the details and top five cast members for a given movie.
+    """
     def get(self, request, id):
         movie_data = requests.get(f'{DB_URL}/movie/{id}?{API_KEY}')
         movie = movie_data.json()
@@ -114,7 +132,12 @@ class MovieDetail(View):
         return render(request, 'movies/movie-detail.html', {"movie": movie_info, "cast": cast_info, "is_favorite": is_favorite})
 
 
+
 class ActorDetail(View):
+    """
+    This view in a specific actor ID and returns information on that actor to present the user
+    with a picture and bio of the actor.
+    """
     def get(self, request, id):
         actor_data = requests.get(f'{DB_URL}/person/{id}?{API_KEY}')
         actor = actor_data.json()
@@ -133,32 +156,43 @@ class ActorDetail(View):
 
 
 class StarMovies(View):
+    """
+    This view takes in an actor ID and pulls the movies that are most popular by
+    that actor.  It is overloaded so that it can be used to call other pages as
+    required be next and previous buttons if there is more than a single page of results.
+    """
     def get(self, request, name, id, page=1):
-        r = requests.get(f"{DB_URL}/discover/movie?with_cast={id}&{POP_SORT}&page={page}&{API_KEY}")
-        results = r.json()
+        movies_with_star = requests.get(f"{DB_URL}/discover/movie?with_cast={id}&{POP_SORT}&page={page}&{API_KEY}")
+        results = movies_with_star.json()
         num_pages = results["total_pages"]
         previous_page, next_page = get_page_bounds(page, num_pages)
-        list = []
-        for item in results["results"]:
-            if item["poster_path"]:
-                list.append({"title": item["original_title"], 
-                            "overview": item["overview"], 
-                            "year": item["release_date"][:4],
-                            "tmdb_id": item["id"], 
-                            "image": f"{IMAGE_URL}{item['poster_path'][1:]}"
-                            })
+        list = get_movie_list(results)
         return render(request, 'movies/star-movies.html', {"name": name, "movies": list, "star_id": id, "next": next_page, "previous": previous_page})
 
 
+@method_decorator(login_required, name="dispatch")
 class ShowFavorites(View):
+    """
+    This pulls and sends out a registered user's favorite movies for display on their
+    unique favorites page.
+    """
     def get(self, request):
-        movies = request.user.favorites.all()
+        if user.is_authenticated:
+            movies = request.user.favorites.all()
+        else:
+            movies = None
         return render(request, 'movies/favorites.html', {"movies": movies})
 
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(csrf_exempt, name="dispatch")
 class ToggleFavoriteMovie(View):
+    """
+    This view handles an AJAX request from the movie detail page that allows a user
+    to favorite a movie.  If it isn't present , it grabs that movie's info from the API, 
+    stores it in the local DB and flags it as a favorite.  Each movie will only be added
+    once.
+    """
     def post(self, request, tmdb_id):
         movie = Movie.objects.all().filter(tmdb_id=tmdb_id)
         if movie.count() == 0:
