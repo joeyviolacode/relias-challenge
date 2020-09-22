@@ -16,14 +16,6 @@
       <div class="header-left">
         <div><a class="home-link" href="{% url 'home' %}"><h1>Movie Search</h1></a></div>
       </div>
-      <div class="header-search v-center">
-        <form action="{% url 'search' %}" class="" method="get">
-            <div>
-              <input name="query" type="text" placeholder="Search here...">
-              <button type="submit">Search now!</button>
-            </div>
-        </form>
-      </div>
       <div class="header-right v-center">
         <div>
           {% if user.is_authenticated %}
@@ -38,6 +30,22 @@
     </header>
   <div class="body-div">
     <div class="main-block">
+        <div class="center">
+            <div class="header-search flex">
+                <form action="{% url 'search' %}" class="search-bar" method="get">
+                    <div>
+                    <input name="query" type="text" placeholder="Search movies...">
+                    <button type="submit">Search movies!</button>
+                    </div>
+                </form>
+                <form action="{% url 'search-actor' %}" class="search-bar" method="get">
+                    <div>
+                    <input name="query" type="text" placeholder="Search actors...">
+                    <button type="submit">Search actors!</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     {% block content %}
     {% endblock content %}
     </div>

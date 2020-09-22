@@ -27,7 +27,7 @@
                     <h4>Starring:</h4>
                     {% for member in cast%}
                     <div class="star-spacer">
-                        <a class="star-link" href="{% url 'star-movies' name=member.name id=member.cast_id %}">{{member.name}}</a>
+                        <a class="star-link" href="{% url 'actor-detail' id=member.cast_id %}">{{member.name}}</a>
                     </div>
                     {% endfor %}
                 </div>

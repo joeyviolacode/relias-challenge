@@ -13,7 +13,8 @@ import urllib
 
 DB_URL = "https://api.themoviedb.org/3"
 IMAGE_URL = "https://image.tmdb.org/t/p/w300/"
-temp = "rLOk4z9zL1tTukIYV56P94aZXKk.jpg"
+API_KEY = f"api_key={MOVIE_API_KEY}"
+POP_SORT = "sort_by=popularity.desc"
 
 
 def get_page_bounds(page, num_pages):
@@ -27,7 +28,7 @@ def get_page_bounds(page, num_pages):
 
 class Home(View):
     def get(self, request, page=1):
-        r = requests.get(f'{DB_URL}/discover/movie?sort_by=popularity.desc&api_key={MOVIE_API_KEY}&page={page}')
+        r = requests.get(f'{DB_URL}/discover/movie?{POP_SORT}&page={page}&{API_KEY}')
         results = r.json()
         num_pages = results["total_pages"]
         previous_page, next_page = get_page_bounds(page, num_pages)
@@ -49,7 +50,7 @@ class Search(View):
             query = request.GET.get('query')
         if query is not None:
             query_string = urllib.parse.quote(query)
-            r = requests.get(f'{DB_URL}/search/movie?query={query_string}&api_key={MOVIE_API_KEY}&sort_by=popularity.desc&page={page}')
+            r = requests.get(f'{DB_URL}/search/movie?query={query_string}&{POP_SORT}&page={page}&{API_KEY}')
             results = r.json()
             num_pages = results["total_pages"]
             previous_page, next_page = get_page_bounds(page, num_pages)
@@ -67,9 +68,28 @@ class Search(View):
         return render(request, 'movies/search.html', 
                     {'movies': list, "query": query or "", "next": next_page, "previous": previous_page})
 
+
+class SearchActor(View):
+    def get(self, request):
+        query = request.GET.get('query')
+        if query is not None:
+            query_string = urllib.parse.quote(query)
+            r = requests.get(f'{DB_URL}/search/person?query={query_string}&{POP_SORT}&{API_KEY}')
+            results = r.json()
+            list = []
+            for item in results["results"][:15]:
+                if item["profile_path"]:
+                    list.append({"name": item["name"],
+                                    "tmdb_id": item["id"],
+                                    "image": f"{IMAGE_URL}{item['profile_path'][1:]}",
+                                })
+        return render(request, 'movies/search-actor.html', {"actors": list, "query": query})
+
+
+
 class MovieDetail(View):
     def get(self, request, id):
-        movie_data = requests.get(f'{DB_URL}/movie/{id}?api_key={MOVIE_API_KEY}')
+        movie_data = requests.get(f'{DB_URL}/movie/{id}?{API_KEY}')
         movie = movie_data.json()
         if movie["poster_path"]:
             movie_info = {"title": movie["original_title"], 
@@ -78,7 +98,7 @@ class MovieDetail(View):
                                     "tmdb_id": movie["id"], 
                                     "image": f"{IMAGE_URL}{movie['poster_path'][1:]}"
                                     }
-        cast_data = requests.get(f"{DB_URL}/movie/{id}/credits?api_key={MOVIE_API_KEY}")
+        cast_data = requests.get(f"{DB_URL}/movie/{id}/credits?{API_KEY}")
         cast = cast_data.json()["cast"]
         cast_info = []
         for member in cast[:5]:
@@ -90,9 +110,21 @@ class MovieDetail(View):
         return render(request, 'movies/movie-detail.html', {"movie": movie_info, "cast": cast_info, "is_favorite": is_favorite})
 
 
+class ActorDetail(View):
+    def get(self, request, id):
+        actor_data = requests.get(f'{DB_URL}/person/{id}?{API_KEY}')
+        actor = actor_data.json()
+        actor_info = {"name" : actor["name"],
+                        "biography" : actor["biography"],
+                        "image" : f"{IMAGE_URL}{actor['profile_path'][1:]}",
+                        "tmdb_id": actor["id"],
+                    }
+        return render(request, 'movies/actor-bio.html', {"actor": actor_info})
+
+
 class StarMovies(View):
     def get(self, request, name, id, page=1):
-        r = requests.get(f"{DB_URL}/discover/movie?with_cast={id}&sort_by=popularity.desc&api_key={MOVIE_API_KEY}&page={page}")
+        r = requests.get(f"{DB_URL}/discover/movie?with_cast={id}&{POP_SORT}&page={page}&{API_KEY}")
         results = r.json()
         num_pages = results["total_pages"]
         previous_page, next_page = get_page_bounds(page, num_pages)
@@ -120,7 +152,7 @@ class ToggleFavoriteMovie(View):
     def post(self, request, tmdb_id):
         movie = Movie.objects.all().filter(tmdb_id=tmdb_id)
         if movie.count() == 0:
-            movie_data = requests.get(f'{DB_URL}/movie/{tmdb_id}?api_key={MOVIE_API_KEY}')
+            movie_data = requests.get(f'{DB_URL}/movie/{tmdb_id}?{API_KEY}')
             movie = movie_data.json()
             if movie["poster_path"]:
                 movie = Movie(title=movie["original_title"],

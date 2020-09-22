@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="content-div flex-around">
+    <div class="center">
+        <div class="flex actor-detail">
+            <img class="big-poster" src="{{actor.image}}">
+            <div class="movie-info">
+                <div class="flex-wrap">
+                    <h2>{{actor.name}}</h2>
+                    <a class="bio-movie-link" href="{% url 'star-movies' name=actor.name id=actor.tmdb_id %}">See their movies!</a>
+                </div>
+                <p>{{actor.biography}}</p>
+                <!-- <div class="starring-div">
+                    <h4>Starring:</h4>
+                    {% for member in cast%}
+                    <div class="star-spacer">
+                        <a class="star-link" href="{% url 'star-movies' name=member.name id=member.cast_id %}">{{member.name}}</a>
+                    </div>
+                    {% endfor %}
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

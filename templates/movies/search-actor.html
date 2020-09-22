@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="content-div">
+    {% if not actors %}
+    <div>
+        <h4>We're sorry.  There were no actors that matched that query.  Please try again.</h4>
+    </div>
+    {% else %}
+    <h3>Here are the actors that match "{{query}}":</h3>
+    {% endif %}
+    <div class="flex-wrap">
+        {% for item in actors %}
+        <div class="actor-pane">
+            <img class="actor-pic-small" src="{{ item.image }}">
+            <div class="center">
+                <span class="title">{{ item.name }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
