@@ -30,5 +30,19 @@
         {% endfor %}
         </div>
     </div>
+    <div class="flex-space">
+        <div></div>>
+        <div class="flex pagination-buttons bottom-nav">
+            {% if previous %}
+            <a href="{% url 'search' page=previous query=query %}">Previous Page </a>
+            {% endif %}
+            {% if next and previous %}
+            <span class="spacer">/</span>
+            {% endif %}
+            {% if next %}
+            <a href="{% url 'search' page=next query=query %}"> Next Page</a>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}

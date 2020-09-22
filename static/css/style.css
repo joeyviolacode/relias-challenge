@@ -156,6 +156,10 @@ header {
     padding: 0px 3px;
 }
 
+.bottom-nav {
+    margin-bottom: 20px;
+}
+
 /* Specific to list views */
 .pagination-buttons {
     padding-top: 22px;
