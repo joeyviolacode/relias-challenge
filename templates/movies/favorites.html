@@ -2,11 +2,17 @@
 
 {% block content %}
 <div class="content-div">
+    {% if user.is_authenticated%}
+    {% if user.favorites.count > 0 %}
     <h3>Here are your favorite movies:</h3>
+    {% else %}
+    <h3>You have no favorites.  Star some movies on their detail page!</h3>
+    {% endif %}
     <div class="flex-wrap">
     {% for item in movies %}
     {% include "movies/movie-pane.html" %}
     {% endfor %}
     </div>
+    {% endif %}    
 </div>
 {% endblock %}
