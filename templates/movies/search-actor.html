@@ -12,12 +12,14 @@
     {% endif %}
     <div class="flex-wrap">
         {% for item in actors %}
-        <div class="actor-pane">
-            <img class="actor-pic-small" src="{{ item.image }}">
-            <div class="center">
-                <span class="title">{{ item.name }}</span>
+        <a href="{% url 'actor-detail' id=item.tmdb_id %}">
+            <div class="actor-pane">
+                <img class="actor-pic-small" src="{{ item.image }}">
+                <div class="center">
+                    <span class="title">{{ item.name }}</span>
+                </div>
             </div>
-        </div>
+        </a>
         {% endfor %}
     </div>
 </div>

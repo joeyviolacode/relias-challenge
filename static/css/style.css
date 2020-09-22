@@ -1,5 +1,5 @@
 body {
-    margin: 0;
+    margin: 0 0 15px 0;
     padding: 0;
     box-sizing: border-box;
     height: 100vh;
@@ -244,6 +244,12 @@ header {
     width: 150px;
     border-radius: 5px;
     margin: 10px 20px;
+    box-shadow: 3px 3px 3px #888888;
+    transition: transform .2s;
+}
+
+.actor-pane:hover {
+    transform: scale(1.1);
 }
 
 .actor-pic-small {

@@ -77,7 +77,7 @@ class SearchActor(View):
             r = requests.get(f'{DB_URL}/search/person?query={query_string}&{POP_SORT}&{API_KEY}')
             results = r.json()
             list = []
-            for item in results["results"][:15]:
+            for item in results["results"][:20]:
                 if item["profile_path"]:
                     list.append({"name": item["name"],
                                     "tmdb_id": item["id"],
@@ -114,11 +114,17 @@ class ActorDetail(View):
     def get(self, request, id):
         actor_data = requests.get(f'{DB_URL}/person/{id}?{API_KEY}')
         actor = actor_data.json()
-        actor_info = {"name" : actor["name"],
-                        "biography" : actor["biography"],
-                        "image" : f"{IMAGE_URL}{actor['profile_path'][1:]}",
-                        "tmdb_id": actor["id"],
-                    }
+        if actor['profile_path']:
+            actor_info = {"name" : actor["name"],
+                            "biography" : actor["biography"],
+                            "image" : f"{IMAGE_URL}{actor['profile_path'][1:]}",
+                            "tmdb_id": actor["id"],
+                        }
+        else:
+            actor_info = {"name" : actor["name"],
+                            "biography" : actor["biography"],
+                            "tmdb_id": actor["id"],
+                        }
         return render(request, 'movies/actor-bio.html', {"actor": actor_info})
 
 
