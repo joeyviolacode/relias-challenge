@@ -153,6 +153,10 @@ header {
     padding-top: 22px;
 }
 
+.favorites-link {
+    padding-right: 10px;
+}
+
 /* Movie pane styling */
 .movie-pane {
     border: 1px solid black;

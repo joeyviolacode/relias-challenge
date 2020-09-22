@@ -124,10 +124,10 @@ class ToggleFavoriteMovie(View):
             movie = movie_data.json()
             if movie["poster_path"]:
                 movie = Movie(title=movie["original_title"],
-                                    release_date=movie["release_date"][:4],
+                                    year=movie["release_date"][:4],
                                     description=movie["overview"],
                                     tmdb_id=tmdb_id,
-                                    imageURL=f"{IMAGE_URL}{movie['poster_path'][1:]}"
+                                    image=f"{IMAGE_URL}{movie['poster_path'][1:]}"
                                     )
                 movie.save()
         else: 

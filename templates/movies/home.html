@@ -5,6 +5,7 @@
     <div class="flex-space">
         <h3>Welcome to Movie Search!  Here are today's most popular movies:</h3>
         <div class="flex pagination-buttons">
+            <a class="favorites-link" href="{% url 'favorites' %}">Your Favorites</a>
             {% if previous %}
             <a href="{% url 'home' page=previous %}">Previous Page </a>
             {% endif %}
