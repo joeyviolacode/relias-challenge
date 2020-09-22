@@ -22,6 +22,8 @@ You should have access to the app on 127.0.0.1:8000.
 
 This is a code challenge I did for Relias Learning.  I've created a site where movies can be browsed and searched and actors can be searched.  Movies give information about their plot, release date, and main cast, and they can be favorited by users who are logged in to the site.  Pages are interconnected throughout, and there are checks for authenticated users at appropriate places.  
 
+All movie information comes from The Movie Database, a free movie API.  Apply for a key here:
+
 The DB used is SQLite just to ease setup on the receiving end.  
 
 

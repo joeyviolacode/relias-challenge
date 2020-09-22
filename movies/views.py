@@ -33,7 +33,9 @@ def get_page_bounds(page, num_pages):
 def get_movie_list(results):
     """
     This bit of code is called in several views to grab information from a list of movies,
-    so broken out here to keep things tidy.
+    so broken out here to keep things tidy.  Catches a KeyError exception in the event that
+    some of the data is missing.  Ignores movies with no poster, as many of those are missing
+    other info anyway.
     """
     list = []
     for item in results["results"]:
@@ -178,6 +180,15 @@ class ShowFavorites(View):
         else:
             movies = []
         return render(request, 'movies/favorites.html', {"movies": movies})
+
+
+class About(View):
+    """
+    This view directs to a page that shows information about this app, mainly properly 
+    attributing all data to TMDB.
+    """
+    def get(self, request):
+        return render(request, 'movies/about.html')
 
 
 @method_decorator(login_required, name="dispatch")
