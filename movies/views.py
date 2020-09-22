@@ -108,6 +108,12 @@ class StarMovies(View):
         return render(request, 'movies/star-movies.html', {"name": name, "movies": list, "star_id": id, "next": next_page, "previous": previous_page})
 
 
+class ShowFavorites(View):
+    def get(self, request):
+        movies = request.user.favorites.all()
+        return render(request, 'movies/favorites.html', {"movies": movies})
+
+
 @method_decorator(login_required, name="dispatch")
 @method_decorator(csrf_exempt, name="dispatch")
 class ToggleFavoriteMovie(View):
@@ -118,7 +124,7 @@ class ToggleFavoriteMovie(View):
             movie = movie_data.json()
             if movie["poster_path"]:
                 movie = Movie(title=movie["original_title"],
-                                    release_date=movie["release_date"],
+                                    release_date=movie["release_date"][:4],
                                     description=movie["overview"],
                                     tmdb_id=tmdb_id,
                                     imageURL=f"{IMAGE_URL}{movie['poster_path'][1:]}"

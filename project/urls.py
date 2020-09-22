@@ -29,6 +29,7 @@ urlpatterns = [
     path('star/<str:name>/<int:id>', movie_views.StarMovies.as_view(), name="star-movies"),
     path('star/<str:name>/<int:id>/page/<int:page>', movie_views.StarMovies.as_view(), name="star-movies"),
     path('movie/<int:tmdb_id>/fave', movie_views.ToggleFavoriteMovie.as_view(), name="toggle-favorite"),
+    path('favorites', movie_views.ShowFavorites.as_view(), name="favorites"),
 ]
 
 if settings.DEBUG:

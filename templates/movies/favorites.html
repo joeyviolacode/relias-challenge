@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="content-div">
+    <h3>Here are your favorite movies:</h3>
+    <div class="flex-wrap">
+    {% for item in movies %}
+    {% include "movies/movie-pane.html" %}
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}
