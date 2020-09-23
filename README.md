@@ -2,7 +2,7 @@
 
 ### How to run
 
-This project is written in Django, so there are a few steps to get it up and running locally.  First, you'll need to make sure you have python 3 and pipenv installed.  Once that is done, clone the repo.  You'll need to rename the file "project/.env.sample" to "project/.env".
+This project is written in Django, so there are a few steps to get it up and running locally.  First, you'll need to make sure you have python3 and pipenv installed.  Once that is done, clone the repo.  You'll need to rename the file "project/.env.sample" to "project/.env".
 
 You'll also need an API key for The Movie Database.  If you have your own, feel free to use it.  If you don't, one should have been supplied for you.  That key will need to be added into the .env file as:
 
@@ -22,6 +22,11 @@ If you'd like to have a look around the admin side of the site (pretty barebones
     python manage.py createsuperuser
 
 and have a look around at 127.0.0.1:8000/admin
+
+
+### For those not familiar with Django
+
+There is a lot of django-generated stuff here.  Most of the core code I wrote for this project is in project/urls.py, movies/views.py, movies/models.py, static/css/style.css, and in the various html files found under templates and its subdirectories.
 
 
 ### About
